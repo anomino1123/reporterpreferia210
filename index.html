@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Repórter da Periferia | A notícia que não chega no centro</title>
+    <meta name="description" content="Análise crítica sobre sociedade, escola e política. A periferia tem voz própria.">
+    <meta name="author" content="Repórter da Periferia">
+    <meta name="theme-color" content="#e85d04">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Repórter">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Meta tags para compartilhamento -->
+    <meta property="og:title" content="Repórter da Periferia">
+    <meta property="og:description" content="A notícia que não chega no centro">
+    <meta property="og:image" content="/icons/icon-512.png">
+    <meta property="og:url" content="https://reporter-da-periferia.netlify.app">
+    <meta property="og:type" content="website">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Barra de notificações -->
+    <div id="notificationBadge" class="notification-badge" style="display: none;">
+        <span id="notificationCount">0</span>
+    </div>
+
+    <div class="app-wrapper">
+        <!-- SIDEBAR ESQUERDA -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">📰</div>
+                <div class="logo-text">
+                    <h2>Repórter<br>da Periferia</h2>
+                    <p>A notícia que não chega no centro</p>
+                </div>
+            </div>
+
+            <!-- Busca -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar posts...">
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-bar">
+                <button class="filter-chip active" data-filter="all">Todos</button>
+                <button class="filter-chip" data-filter="pensamento">💭 Pensamento</button>
+                <button class="filter-chip" data-filter="tese">📚 Tese</button>
+                <button class="filter-chip" data-filter="diario">📓 Diário</button>
+                <button class="filter-chip" data-filter="jornal">📰 Notícia</button>
+                <button class="filter-chip" data-filter="audio">🎙️ Áudio</button>
+            </div>
+
+            <!-- Perfil -->
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar" onclick="window.location.href='perfil.html'">
+                    <span id="avatarEmoji">🧠</span>
+                    <img id="avatarImage" style="display: none;">
+                </div>
+                <div class="user-details">
+                    <h4 id="userName">Carregando...</h4>
+                    <p id="userBio">Carregando...</p>
+                </div>
+            </div>
+
+            <!-- Menu -->
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-page="feed"><i class="fas fa-home"></i> <span>Início</span></button>
+                <button class="nav-btn" data-page="teses"><i class="fas fa-brain"></i> <span>Teses</span></button>
+                <button class="nav-btn" data-page="diario"><i class="fas fa-book"></i> <span>Diário</span></button>
+                <button class="nav-btn" data-page="jornal"><i class="fas fa-newspaper"></i> <span>Notícias</span></button>
+                <button class="nav-btn" data-page="audio"><i class="fas fa-microphone"></i> <span>Áudios</span></button>
+                <button class="nav-btn" data-page="salvos"><i class="fas fa-bookmark"></i> <span>Salvos</span></button>
+                <button class="nav-btn" data-page="meu-perfil" id="perfilBtn"><i class="fas fa-user-circle"></i> <span>Meu Perfil</span></button>
+                <button class="nav-btn logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></button>
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 id="pageTitle">Início</h1>
+                <div class="top-actions">
+                    <button class="icon-btn" id="refreshFeedBtn" title="Atualizar"><i class="fas fa-sync-alt"></i></button>
+                    <button class="icon-btn" id="darkModeBtn" title="Modo escuro"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+            <div id="feedContainer" class="feed-container">
+                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
+            </div>
+        </main>
+
+        <!-- SIDEBAR DIREITA -->
+        <aside class="right-sidebar">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-comment-dots"></i><h3>Mensagens</h3><button class="small-btn" id="newChatBtn">+</button></div>
+                <div id="dmList" class="dm-list"><p class="placeholder">Nenhuma conversa</p></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fas fa-user-plus"></i><h3>Descobrir pessoas</h3></div>
+                <div id="suggestionsList" class="suggestions-list"><p class="placeholder">Carregando...</p></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fas fa-bell"></i><h3>Notificações</h3><button class="small-btn" id="markAllReadBtn">✓</button></div>
+                <div id="notificationsList" class="notifications-list"><p class="placeholder">Sem notificações</p></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><i class="fas fa-info-circle"></i><h3>Sobre</h3></div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;">
+                    <p><strong>Repórter da Periferia</strong><br>"A notícia que não chega no centro"</p>
+                    <p style="margin-top: 10px;">Espaço independente para pensar criticamente a sociedade, a escola e o mundo.</p>
+                    <hr style="margin: 12px 0; border-color: var(--border);">
+                    <p><small>Versão 4.0 | Feed público</small></p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- MODAL DE POSTAGEM -->
+    <div id="postModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header"><h3><i class="fas fa-pen-fancy"></i> Nova publicação</h3><button class="close-modal">&times;</button></div>
+            <div class="post-type-selector">
+                <button class="type-btn active" data-type="pensamento">💭 Pensamento</button>
+                <button class="type-btn" data-type="tese">📚 Tese</button>
+                <button class="type-btn" data-type="diario">📓 Diário</button>
+                <button class="type-btn" data-type="jornal">📰 Notícia</button>
+                <button class="type-btn" data-type="audio">🎙️ Áudio</button>
+            </div>
+            <input type="text" id="postTitleInput" placeholder="Título" class="post-input">
+            <textarea id="postContentInput" placeholder="Escreva sua reflexão..." class="post-textarea"></textarea>
+            <div id="charCounter" class="char-counter">0/2000</div>
+            <input type="text" id="postEmojiInput" placeholder="Emoji (ex: 🔥, 💡)" class="post-input">
+            <input type="text" id="hashtagsInput" class="post-input" placeholder="Hashtags (separadas por vírgula)">
+            <div class="hashtags-hint"><i class="fas fa-hashtag"></i> As hashtags ajudam pessoas a encontrar seu conteúdo</div>
+            <div class="image-upload-area" id="imageUploadArea">
+                <i class="fas fa-image"></i> Clique para adicionar imagem
+                <input type="file" id="postImageInput" accept="image/*" style="display: none;">
+                <img id="postImagePreview" class="image-preview" style="display: none;">
+                <button type="button" id="removeImageBtn" class="remove-image-btn" style="display: none;">Remover</button>
+            </div>
+            <div id="audioRecordArea" class="audio-record-area" style="display: none;">
+                <button id="startRecordingBtn" class="record-btn"><i class="fas fa-microphone"></i> Gravar áudio</button>
+                <button id="stopRecordingBtn" class="stop-btn" style="display: none;"><i class="fas fa-stop"></i> Parar</button>
+                <div id="audioPreviewArea"></div>
+                <input type="hidden" id="audioDataField">
+            </div>
+            <button id="publishPostBtn" class="publish-btn"><i class="fas fa-paper-plane"></i> Publicar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DM -->
+    <div id="dmModal" class="modal dm-modal">
+        <div class="modal-content small">
+            <div class="modal-header"><h3 id="dmTargetName">Conversa</h3><button class="close-modal">&times;</button></div>
+            <div id="dmMessagesArea" class="dm-messages"></div>
+            <div class="dm-input-area">
+                <input type="text" id="dmMessageInput" placeholder="Digite sua mensagem...">
+                <button id="sendDmBtn" class="send-btn"><i class="fas fa-paper-plane"></i> Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL IMAGEM -->
+    <div id="fullImageModal" class="modal" style="background: rgba(0,0,0,0.95); display: none;">
+        <div style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            <img id="fullImage" src="" style="max-width: 90%; max-height: 90%; border-radius: 16px;">
+            <button class="close-modal" style="position: absolute; top: 20px; right: 20px;">&times;</button>
+        </div>
+    </div>
+
+    <!-- BOTÃO FLUTUANTE -->
+    <button id="fabPostBtn" class="fab-button"><i class="fas fa-plus"></i></button>
+
+    <!-- SERVICE WORKER -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log(err));
+            });
+        }
+    </script>
+
+    <!-- SCRIPTS -->
+    <script src="database.js"></script>
+    <script src="notifications.js"></script>
+    <script src="auth.js"></script>
+    <script src="mobile.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        document.getElementById('markAllReadBtn')?.addEventListener('click', () => {
+            Notifications.markAllAsRead();
+            showToast('✅ Todas notificações marcadas como lidas');
+        });
+        
+        document.getElementById('fullImageModal')?.querySelector('.close-modal')?.addEventListener('click', () => {
+            document.getElementById('fullImageModal').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
